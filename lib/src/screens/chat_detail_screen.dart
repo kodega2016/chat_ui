@@ -1,18 +1,30 @@
 import 'package:chat_ui/src/models/message.dart';
 import 'package:chat_ui/src/models/user.dart';
+import 'package:chat_ui/src/shared/k_avatar.dart';
+import 'package:chat_ui/src/shared/k_shared.dart';
+import 'package:chat_ui/src/widgets/chat_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-class ChatDetailScreen extends StatelessWidget {
+class ChatDetailScreen extends StatefulWidget {
   final User user;
   const ChatDetailScreen({Key key, this.user}) : super(key: key);
+
+  @override
+  _ChatDetailScreenState createState() => _ChatDetailScreenState();
+}
+
+class _ChatDetailScreenState extends State<ChatDetailScreen> {
+  bool _formOpen = false;
+
+  void _toggleFormOpen() => setState(() => _formOpen = !_formOpen);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(user.name),
+        title: Text(widget.user.name),
         elevation: 2.0,
         actions: [
           IconButton(
@@ -41,90 +53,127 @@ class ChatDetailScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(user.avatar),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          user.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          user.online ? "Online" : "Offline",
-                          style: Theme.of(context)
-                              .textTheme
-                              .caption
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+          IgnorePointer(
+            ignoring: _formOpen,
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          KAvatar(
+                            height: 100,
+                            width: 100,
+                            image: widget.user.avatar,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            widget.user.name,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            widget.user.online ? "Online" : "Offline",
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 50),
-                    primary: false,
-                    shrinkWrap: true,
-                    reverse: true,
-                    itemCount: messages.length,
-                    itemBuilder: (context, i) {
-                      final _message = messages.reversed.toList()[i];
-                      return ChatListItem(
-                        message: _message,
-                        isSent: i % 2 == 1,
-                      );
-                    },
-                  ),
-                ],
+                    ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 60),
+                      primary: false,
+                      shrinkWrap: true,
+                      reverse: true,
+                      itemCount: messages.length,
+                      itemBuilder: (context, i) {
+                        final _message = messages.reversed.toList()[i];
+                        return ChatListItem(
+                          message: _message,
+                          isSent: i % 2 == 1,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
           Positioned(
             bottom: 0,
+            left: 0,
+            right: 0,
             child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 4,
-                    color: Colors.grey[200],
-                    offset: Offset(0.2, 0.2),
-                  )
-                ],
-              ),
-              child: Row(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
                 children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration.collapsed(
-                        hintText: 'Enter some messages...',
+                  if (_formOpen)
+                    KRoundedContainer(
+                      padding: EdgeInsets.fromLTRB(0, 8, 0, 10),
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        // child: Wrap(
+                        //   children: [
+                        //     FormImagePreview(),
+                        //     FormImagePreview(),
+                        //     FormImagePreview(),
+                        //   ],
+                        // ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                                icon: Icon(Feather.camera), onPressed: () {}),
+                            SizedBox(width: 10),
+                            IconButton(
+                                icon: Icon(Feather.video), onPressed: () {}),
+                            SizedBox(width: 10),
+                            IconButton(
+                                icon: Icon(Feather.mic), onPressed: () {}),
+                            SizedBox(width: 10),
+                            IconButton(
+                                icon: Icon(Feather.file), onPressed: () {}),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Send",
-                      style: Theme.of(context).textTheme.button.copyWith(
-                            color: Colors.black,
+                  SizedBox(height: 8),
+                  KRoundedContainer(
+                    margin: EdgeInsets.only(bottom: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          child: Icon(_formOpen
+                              ? Feather.x_circle
+                              : Feather.plus_circle),
+                          onTap: _toggleFormOpen,
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration.collapsed(
+                              hintText: 'Enter some messages...',
+                            ),
                           ),
+                        ),
+                        GestureDetector(
+                          child: Icon(Feather.send),
+                          onTap: _toggleFormOpen,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -137,66 +186,34 @@ class ChatDetailScreen extends StatelessWidget {
   }
 }
 
-class ChatListItem extends StatelessWidget {
-  final bool isSent;
-  final Message message;
-
-  const ChatListItem({Key key, @required this.message, this.isSent})
-      : super(key: key);
-
-  _getContent(BuildContext context) {
-    switch (message.messageType) {
-      case MessageType.Text:
-        return Text(
-          message.content,
-          style: Theme.of(context)
-              .textTheme
-              .caption
-              .copyWith(color: isSent ? Colors.black : Colors.white),
-        );
-
-      case MessageType.Image:
-        return Image.network(message.content, fit: BoxFit.cover);
-
-      default:
-    }
-  }
-
+class FormImagePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment:
-            isSent ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!isSent)
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    'https://avatars.githubusercontent.com/u/29916949?s=460&u=f854682a6880c61418e25f122e0a7f904e97190b&v=4',
-                  ),
-                ),
-              const SizedBox(width: 10),
-              Container(
-                padding: EdgeInsets.all(10),
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.6,
-                ),
-                child: _getContent(context),
-                decoration: BoxDecoration(
-                  color: isSent
-                      ? Colors.grey[100]
-                      : Theme.of(context).primaryColor.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: 20, right: 20),
+          height: 90,
+          width: 90,
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(8),
+            image: DecorationImage(
+              fit: BoxFit.contain,
+              image: NetworkImage(
+                'https://enterprise.affle.com/blog/wp-content/uploads/2020/07/Design-Thinking-Process.png',
               ),
-            ],
+            ),
           ),
-        ],
-      ),
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: IconButton(
+              icon: Icon(Feather.x_circle, color: Colors.red),
+              onPressed: () {}),
+        ),
+      ],
     );
   }
 }

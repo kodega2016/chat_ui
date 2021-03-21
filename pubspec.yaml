@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cached_network_image: ^2.5.1
   cupertino_icons: ^1.0.2
   flutter_vector_icons: ^1.0.0
   google_fonts: ^2.0.0

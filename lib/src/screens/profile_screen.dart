@@ -1,6 +1,8 @@
 import 'package:chat_ui/src/models/user.dart';
-import 'package:chat_ui/src/screens/auth_scrren.dart';
+import 'package:chat_ui/src/screens/auth_screen.dart';
+import 'package:chat_ui/src/shared/k_shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -10,19 +12,8 @@ class ProfileScreen extends StatelessWidget {
         title: Text("My Profile"),
         elevation: 2.0,
       ),
-      body: Container(
-        margin: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 5,
-              color: Colors.black12,
-              offset: Offset(0.4, 0.2),
-            )
-          ],
-        ),
+      body: KRoundedContainer(
+        margin: const EdgeInsets.all(8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -51,18 +42,31 @@ class ProfileScreen extends StatelessWidget {
                       Text("khadgalovecoding2016@gmail.com"),
                     ],
                   ),
+                  IconButton(
+                    icon: Icon(Feather.edit),
+                    onPressed: () {},
+                  ),
                 ],
               ),
             ),
             Divider(),
             ListTile(
               title: Text('Sign Out'),
-              leading: Icon(Icons.exit_to_app),
-              onTap: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (ctx) => AuthScreen()),
-                    (route) => false);
+              trailing: Icon(Icons.exit_to_app),
+              dense: true,
+              onTap: () async {
+                final _isYes = await KHelper.showConfirmDialog(
+                      context: context,
+                      title: 'Are you sure to sign out?',
+                      content: 'You will be loggout from the app.',
+                    ) ??
+                    false;
+
+                if (_isYes)
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (ctx) => AuthScreen()),
+                      (route) => false);
               },
             ),
           ],

@@ -1,10 +1,11 @@
 import 'package:chat_ui/src/models/user.dart';
 import 'package:chat_ui/src/screens/profile_screen.dart';
+import 'package:chat_ui/src/shared/k_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'src/screens/auth_scrren.dart';
+import 'src/screens/auth_screen.dart';
 import 'src/screens/chat_list_screen.dart';
 import 'src/screens/people_list_screen.dart';
 
@@ -18,9 +19,9 @@ class ChatApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xff50297A),
-        accentColor: Color(0xff0C0B22),
-        fontFamily: GoogleFonts.titilliumWeb().fontFamily,
+        primaryColor: Color(0xff000F02),
+        accentColor: Color(0xff523200),
+        fontFamily: GoogleFonts.padauk().fontFamily,
       ),
       home: AuthScreen(),
     );
@@ -60,11 +61,10 @@ class _PageSetupState extends State<PageSetup> {
         elevation: 0.5,
         title: Text(
           "${pages[_currentScreen].title}",
-          style: Theme.of(context).textTheme.headline6.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontFamily: GoogleFonts.alef().fontFamily,
-              ),
+          style: Theme.of(context)
+              .textTheme
+              .headline6
+              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: GestureDetector(
           onTap: () => Navigator.push(
@@ -74,17 +74,12 @@ class _PageSetupState extends State<PageSetup> {
               fullscreenDialog: true,
             ),
           ),
-          child: Container(
-            margin: EdgeInsets.fromLTRB(10, 8, 8, 8),
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: NetworkImage(users.first.avatar),
-                fit: BoxFit.cover,
-              ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: KAvatar(
+              image: users.first.avatar,
+              height: 30,
+              width: 30,
             ),
           ),
         ),
@@ -106,10 +101,8 @@ class _PageSetupState extends State<PageSetup> {
                   right: 0,
                   child: Container(
                     padding: EdgeInsets.all(4),
-                    // height: 10,
-                    // width: 10,
                     child: Text(
-                      "10",
+                      "6",
                       style: Theme.of(context).textTheme.caption.copyWith(
                             color: Colors.white,
                             fontSize: 6,

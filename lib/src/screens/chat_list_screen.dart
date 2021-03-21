@@ -1,11 +1,13 @@
 import 'package:chat_ui/src/models/user.dart';
 import 'package:chat_ui/src/screens/chat_detail_screen.dart';
+import 'package:chat_ui/src/shared/k_avatar.dart';
 import 'package:flutter/material.dart';
 
 class ChatListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (ctx, i) => Divider(),
       itemCount: users.length,
       itemBuilder: (context, i) {
         final _user = users[i];
@@ -13,26 +15,18 @@ class ChatListScreen extends StatelessWidget {
           title: Text(_user.name),
           leading: Stack(
             children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 0),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(_user.avatar),
-                ),
-              ),
+              KAvatar(image: _user.avatar),
               if (_user.online)
                 Positioned(
-                  bottom: 0,
+                  bottom: 10,
                   right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Container(
-                      height: 8,
-                      width: 8,
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white)),
-                    ),
+                  child: Container(
+                    height: 8,
+                    width: 8,
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white)),
                   ),
                 ),
             ],
